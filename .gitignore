@@ -1,2 +1,10 @@
 test.txt
 testdata/
+p2pkh/
+p2sh/
+v0_*
+v1*
+verified
+output.txt
+.venv/
+__pycache__/

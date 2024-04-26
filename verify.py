@@ -6,21 +6,26 @@ import ecdsa
 import hashlib
 import struct
 
-### Read and Serialize JSON files ###
-MEM_DIR = "./mempool/"
-transaction_files = os.listdir(MEM_DIR)
+def filter_transactions(input_folder, output_folder):
+    # Ensure the output folder exists or create it
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
 
-def filter_with_script_type(transaction_files):
-    for file in transaction_files:
-        f = open(MEM_DIR+file)
-        tx_data = json.load(f)
-        script_name = tx_data['vin'][0]['prevout']['scriptpubkey_type']
-        os.makedirs(script_name, exist_ok=True)
-        #print(f"./{script_name}/{file}")
-        print(f"[INFO] copying {MEM_DIR+file} to {script_name}")
-        copyfile(MEM_DIR+file, f"{script_name}/{file}")
-        
-print("Filtering files based on script type")
+    # Iterate through each JSON file in the input folder
+    for filename in os.listdir(input_folder):
+        if filename.endswith(".json"):
+            input_file_path = os.path.join(input_folder, filename)
+            output_file_path = os.path.join(output_folder, filename)
+
+            with open(input_file_path, "r") as input_file:
+                data = json.load(input_file)
+
+                # Check if all inputs have "scriptpubkey_type": "p2pkh"
+                all_p2pkh = all(vin["prevout"]["scriptpubkey_type"] == "p2pkh" for vin in data["vin"])
+
+                if all_p2pkh:
+                    # Write the transaction to the output folder
+                    copyfile(input_file_path, output_file_path)
 
 ### Validation scripts ###
 def p2pkh_script(final_asm, data, idx):
@@ -94,48 +99,13 @@ def transaction_hash_with_id(tx_json, idx):
             message += struct.pack('<I', vin['sequence']).hex()
     message += compact_size(len(tx_data['vout'])).hex()
     for vout in tx_data['vout']:
-        # message += struct.pack('<Q', vout['value']).hex()[2:]
         message += struct.pack('<Q', int(vout['value'])).hex()
-        # message += hex(len(vout['scriptpubkey'])//2)[2:]
         message += compact_size(len(vout['scriptpubkey'])//2).hex()
         message += vout['scriptpubkey']
     message += struct.pack('<I', tx_data['locktime']).hex()
-    # add SIGHASH
     message += "01000000"
-    print(message)
     return hash256(bytes.fromhex(message))
-
     
-# def transaction_hash(transaction_json):
-#     transaction_data = json.loads(transaction_json)
-#     message = ""
-#     message += struct.pack('<I', transaction_data['version']).hex()
-#     message += struct.pack('<B', len(transaction_data['vin'])).hex()
-#     # print(struct.pack('<B', len(transaction_data['vin'])).hex())
-#     for vin in transaction_data['vin']:
-#         message += ''.join(reversed([vin['txid'][i:i+2] for i in range(0, len(vin['txid']), 2)]))
-#         message += struct.pack('<I', vin['vout']).hex()
-#         message += hex(len(vin['prevout']['scriptpubkey'])//2)[2:]
-#         message += vin['prevout']['scriptpubkey']
-#         message += struct.pack('<I', vin['sequence']).hex()
-        
-#     message += struct.pack('<B', len(transaction_data['vout'])).hex()
-#     for vout in transaction_data['vout']:
-#         # message += struct.pack('<Q', vout['value']).hex()[2:]
-#         message += struct.pack('<Q', int(vout['value'])).hex()
-#         message += hex(len(vout['scriptpubkey'])//2)[2:]
-#         message += vout['scriptpubkey']
-#     message += struct.pack('<I', transaction_data['locktime']).hex()
-#     # add SIGHASH
-#     message += "01000000"
-#     if len(message)%2 == 0:
-#         pass
-#     else:
-#         message += "0"
-#     # print(message)
-#     return hash256(bytes.fromhex(message))
-        
-
 def verify_signature(stack, transaction_hash):
     # Convert public key to bytes
     if len(stack) < 2:
@@ -172,18 +142,27 @@ def p2pkh_validate(data):
     return ans
 
 # p2pkh_files = os.listdir("./p2pkh/")
-p2pkh_files = os.listdir("./testdata/")
-c = 0
-for file in p2pkh_files:
-    # f = open('./p2pkh/'+file)
-    f = open('./testdata/'+file)
-    if p2pkh_validate(json.load(f)) == True:
-        # print("The script is valid")
-        c += 1
-        print(file)
-    else:
-        # print("The script is invalid")
-        pass
+# os.makedirs("verified", exist_ok=True)
+# for file in p2pkh_files:
+#     # f = open('./p2pkh/'+file)
+#     f = open('./p2pkh/'+file)
+#     if p2pkh_validate(json.load(f)) == True:
+#         # print("The script is valid")
+#         c += 1
+#         print(file)
+#         copyfile(f"./p2pkh/{file}", f"./verified/{file}")
+#     else:
+#         # print("The script is invalid")
+#         pass
 
-# print(f"{c} has false in OP_EQUAVERIFY")
-print(c)
+# # print(f"{c} has false in OP_EQUAVERIFY")
+# print(c)
+def verify_transaction(folder):
+    files = os.listdir(folder)
+    os.makedirs("verified", exist_ok=True)
+    for file in files:
+        f = open(folder+"/"+file)
+        if p2pkh_validate(json.load(f)) == True:
+            copyfile(f"{folder}/{file}", f"./verified/{file}")
+        else:
+            pass
