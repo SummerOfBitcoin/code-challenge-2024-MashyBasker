@@ -1,6 +1,7 @@
 import os
 import json
 from shutil import copyfile
+from Crypto.Hash import RIPEMD160
 import hashlib
 import ecdsa
 import hashlib
@@ -43,7 +44,7 @@ def p2pkh_script(final_asm, data, idx):
         elif opcodes[i] == "OP_HASH160":
             pubkey = stack.pop()
             sha256_val = hashlib.sha256(bytes.fromhex(pubkey)).digest()
-            ripemd_hash = hashlib.new('ripemd160', sha256_val).digest()
+            ripemd_hash = RIPEMD160.new(sha256_val).digest()
             stack.append(ripemd_hash.hex())
         elif opcodes[i] == "OP_EQUALVERIFY":
             last_elem1 = stack.pop()
