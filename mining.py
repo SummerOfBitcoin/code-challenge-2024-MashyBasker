@@ -46,7 +46,7 @@ def merkle(hashlist):
 
 def calculate_coinbase_p2pkh(txidlist):
     txidlist = ["0000000000000000000000000000000000000000000000000000000000000000"] + txidlist
-    witness_root_hash = merkle(txidlist)[::-1]
+    witness_root_hash = merkle(txidlist)
     coinbase = ""
     version = "01000000"
     marker = "00"
@@ -60,7 +60,7 @@ def calculate_coinbase_p2pkh(txidlist):
     outputcount = "02"
     coinbase = version + marker + flag + input_count + txid + vout + scriptsigsize + scirptsig + sequence + outputcount
     
-    txid_hash = witness_root_hash + txid
+    txid_hash = witness_root_hash + "0000000000000000000000000000000000000000000000000000000000000000"
     witness_commitment = hash256(bytes.fromhex(txid_hash)).hex()
     coinbase += "f595814a00000000" + "19" + "76a914edf10a7fac6b32e24daa5305c723f3de58db1bc888ac" # vout 1
     coinbase += "0000000000000000" + "26" + f"6a24aa21a9ed{witness_commitment}" # vout 2
