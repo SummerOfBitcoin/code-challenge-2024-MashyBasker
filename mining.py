@@ -22,7 +22,7 @@ def create_tx_id(tx_json):
         txid += compact_size(len(vout['scriptpubkey'])//2).hex()
         txid += vout['scriptpubkey']
     txid += struct.pack('<I', tx_data['locktime']).hex()
-    return hash256(bytes.fromhex(txid)[::-1])
+    return hash256(bytes.fromhex(txid))[::-1]
 
 def hash2(a, b):
     a1 = bytes.fromhex(a)[::-1]

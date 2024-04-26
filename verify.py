@@ -104,7 +104,7 @@ def transaction_hash_with_id(tx_json, idx):
         message += compact_size(len(vout['scriptpubkey'])//2).hex()
         message += vout['scriptpubkey']
     message += struct.pack('<I', tx_data['locktime']).hex()
-    message += "01000000"
+    message += "01000000" # sighash
     return hash256(bytes.fromhex(message))
     
 def verify_signature(stack, transaction_hash):
@@ -142,22 +142,6 @@ def p2pkh_validate(data):
         ans = p2pkh_script(final_asm, json.dumps(data), i)
     return ans
 
-# p2pkh_files = os.listdir("./p2pkh/")
-# os.makedirs("verified", exist_ok=True)
-# for file in p2pkh_files:
-#     # f = open('./p2pkh/'+file)
-#     f = open('./p2pkh/'+file)
-#     if p2pkh_validate(json.load(f)) == True:
-#         # print("The script is valid")
-#         c += 1
-#         print(file)
-#         copyfile(f"./p2pkh/{file}", f"./verified/{file}")
-#     else:
-#         # print("The script is invalid")
-#         pass
-
-# # print(f"{c} has false in OP_EQUAVERIFY")
-# print(c)
 def verify_transaction(folder):
     files = os.listdir(folder)
     os.makedirs("verified", exist_ok=True)
