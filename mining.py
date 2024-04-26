@@ -77,7 +77,7 @@ def txid_list():
 def blockheader(txidlst):
     ver = "00000020"
     prevblock = ["0000000000000000000000000000000000000000000000000000000000000000"]
-    txid_list = prevblock + txid_list
+    txidlst = prevblock + txidlst
     merkle_root = merkle(txidlst)
     target_bits = 0x1f00ffff
     exp = target_bits >> 24
