@@ -73,7 +73,7 @@ def txid_list():
     return txid_list
     
 def blockheader(txidlst):
-    ver = bytes.fromhex("02000000")[::-1].hex()
+    ver = bytes.fromhex("02000000").hex()
     prevblock = "0000000000000000000000000000000000000000000000000000000000000000"
     merkle_root = merkle(txidlst)
     target_bits = 0x1f00ffff
