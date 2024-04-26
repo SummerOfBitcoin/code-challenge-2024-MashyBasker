@@ -46,7 +46,7 @@ def merkle(hashlist):
 
 def calculate_coinbase_p2pkh(txidlist):
     txidlist = ["0000000000000000000000000000000000000000000000000000000000000000"] + txidlist
-    witness_root_hash = merkle(txidlist)
+    witness_root_hash = merkle(txidlist)[::-1]
     coinbase = ""
     version = "01000000"
     marker = "00"
