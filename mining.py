@@ -17,12 +17,14 @@ def create_tx_id(tx_json):
         txid += compact_size(len(vin['scriptsig'])//2).hex()
         txid += vin['scriptsig']
         txid += struct.pack('<I', vin['sequence']).hex()
-    txid += compact_size(len(tx_data['vout'])).hex()    
+        
+    txid += compact_size(len(tx_data['vout'])).hex()
+    
     for vout in tx_data['vout']:
-        txid += struct.pack('<Q', int(vout['value'])).hex()
+        txid += struct.pack('<Q', vout['value']).hex()
         txid += compact_size(len(vout['scriptpubkey'])//2).hex()
         txid += vout['scriptpubkey']
-    txid += struct.pack('<I', tx_data['locktime']).hex()
+    txid += struct.pack('<I', int(tx_data['locktime'])).hex()
     txid_hash = hash256(bytes.fromhex(txid))
     return txid_hash[::-1].hex()
 

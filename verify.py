@@ -87,7 +87,7 @@ def transaction_hash_with_id(tx_json, idx):
     for i, vin in enumerate(tx_data['vin']):
         if i == idx:
             message += ''.join(reversed([vin['txid'][i:i+2] for i in range(0, len(vin['txid']), 2)]))
-            message += struct.pack('<I', vin['vout']).hex()
+            message += struct.pack('<I', int(vin['vout'])).hex()
             # message += hex(len(vin['prevout']['scriptpubkey'])//2)[2:]
             message += compact_size(len(vin['prevout']['scriptpubkey'])//2).hex()
             message += vin['prevout']['scriptpubkey']
