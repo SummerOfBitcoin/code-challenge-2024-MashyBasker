@@ -54,11 +54,11 @@ def calculate_coinbase_p2pkh(txidlist):
     input_count = "01"
     txid = (b'\x00'*32).hex()
     vout = "ffffffff"
-    scirptsigsize = "03000000184d696e656420627920416e74506f6f6c373946205b8160a4"
-    scirptsigsize = "1d"
+    scriptsigsize = "1d"
+    scirptsig = "03000000184d696e656420627920416e74506f6f6c373946205b8160a4"
     sequence = "ffffffff"
     outputcount = "02"
-    coinbase = version + marker + flag + input_count + txid + vout + scirptsigsize + sequence + outputcount
+    coinbase = version + marker + flag + input_count + txid + vout + scriptsigsize + scirptsig + sequence + outputcount
     
     txid_hash = witness_root_hash + txid
     witness_commitment = hash256(bytes.fromhex(txid_hash)).hex()[::-1]
