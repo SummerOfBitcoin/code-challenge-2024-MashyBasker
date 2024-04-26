@@ -10,19 +10,21 @@ def create_tx_id(tx_json):
     tx_data = json.loads(tx_json)
     txid += struct.pack('<I', tx_data['version']).hex()
     txid += compact_size(len(tx_data['vin'])).hex()
+
     for vin in tx_data['vin']:
         txid += ''.join(reversed([vin['txid'][i:i+2] for i in range(0, len(vin['txid']), 2)]))
         txid += struct.pack('<I', vin['vout']).hex()
         txid += compact_size(len(vin['scriptsig'])//2).hex()
         txid += vin['scriptsig']
         txid += struct.pack('<I', vin['sequence']).hex()
-    txid += compact_size(len(tx_data['vout'])).hex()
+    txid += compact_size(len(tx_data['vout'])).hex()    
     for vout in tx_data['vout']:
         txid += struct.pack('<Q', int(vout['value'])).hex()
         txid += compact_size(len(vout['scriptpubkey'])//2).hex()
         txid += vout['scriptpubkey']
     txid += struct.pack('<I', tx_data['locktime']).hex()
-    return hash256(bytes.fromhex(txid))[::-1]
+    txid_hash = hash256(bytes.fromhex(txid))
+    return txid_hash[::-1].hex()
 
 def hash2(a, b):
     a1 = bytes.fromhex(a)[::-1]
@@ -67,11 +69,11 @@ def txid_list():
     for file in os.listdir("./verified"):
         f = open("./verified/"+file)
         tx_data = json.load(f)
-        txid_list.append(create_tx_id(json.dumps(tx_data)).hex())
+        txid_list.append(create_tx_id(json.dumps(tx_data)))
     return txid_list
     
 def blockheader(txidlst):
-    ver = bytes.fromhex("00000020")
+    ver = bytes.fromhex("02000000")[::-1].hex()
     prevblock = "0000000000000000000000000000000000000000000000000000000000000000"
     merkle_root = merkle(txidlst)
     target_bits = 0x1f00ffff
