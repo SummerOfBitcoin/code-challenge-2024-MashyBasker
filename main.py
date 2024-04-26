@@ -17,7 +17,7 @@ def write_to_file(txidlist, coinbase, block_header):
 filter_transactions("./mempool", "./p2pkh")
 verify_transaction("./p2pkh")
 txidlist = txid_list()
-coinbase = calculate_coinbase_p2pkh()
+coinbase = calculate_coinbase_p2pkh(txidlist)
 block_header = blockheader(txidlist)
 write_to_file(txidlist, coinbase, block_header)
         
