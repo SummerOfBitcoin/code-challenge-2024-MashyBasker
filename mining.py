@@ -84,7 +84,7 @@ def blockheader(txidlst):
     nonce = 0
 
     while nonce < 0x100000000:
-        header = ver + bytes.fromhex(prevblock)[::-1] +\
+        header = bytes.fromhex(ver) + bytes.fromhex(prevblock)[::-1] +\
             bytes.fromhex(merkle_root)[::-1] + struct.pack("<LLL", int(hex(int(time.time())),16), target_bits, nonce)
         hash = hashlib.sha256(hashlib.sha256(header).digest()).digest()
         # print(nonce, (hash[::-1]).hex())
