@@ -75,7 +75,6 @@ def create_witness_root_hash(folder):
     return bytes.fromhex(merkle(wtxid))
         
 def calculate_coinbase(folder):
-    # txidlist = ["0000000000000000000000000000000000000000000000000000000000000000"] + txidlist
     witness_root_hash = create_witness_root_hash(folder)
     witness_root_hash = witness_root_hash[::-1].hex()
     coinbase = ""
@@ -95,38 +94,11 @@ def calculate_coinbase(folder):
     witness_commitment = hash256(bytes.fromhex(txid_hash)).hex()
     coinbase += "f595814a00000000" + "19" + "76a914edf10a7fac6b32e24daa5305c723f3de58db1bc888ac" # vout 1
     coinbase += "0000000000000000" + "26" + f"6a24aa21a9ed{witness_commitment}" # vout 2
-    # 6a24aa21a9edfaa194df59043645ba0f58aad74bfd5693fa497093174d12a4bb3b0574a878db
     # add witness
     coinbase += "01" + "20" + "0000000000000000000000000000000000000000000000000000000000000000"
     coinbase += "00000000" # add locktime
     return coinbase
 
-# def calculate_coinbase_p2wpkh(wtxidlist):
-#     wtxidlist = ["0000000000000000000000000000000000000000000000000000000000000000"] + wtxidlist
-#     witness_root_hash = bytes.fromhex(merkle(wtxidlist))
-#     witness_root_hash = witness_root_hash[::-1].hex()
-#     coinbase = ""
-#     version = "01000000"
-#     marker = "00"
-#     flag = "01"
-#     input_count = "01"
-#     txid = (b'\x00'*32).hex()
-#     vout = "ffffffff"
-#     scriptsigsize = "1d"
-#     scirptsig = "03000000184d696e656420627920416e74506f6f6c373946205b8160a4"
-#     sequence = "ffffffff"
-#     outputcount = "02"
-#     coinbase = version + marker + flag + input_count + txid + vout + scriptsigsize + scirptsig + sequence + outputcount
-    
-#     txid_hash = witness_root_hash + "0000000000000000000000000000000000000000000000000000000000000000"
-#     witness_commitment = hash256(bytes.fromhex(txid_hash)).hex()
-#     coinbase += "f595814a00000000" + "19" + "76a914edf10a7fac6b32e24daa5305c723f3de58db1bc888ac" # vout 1
-#     coinbase += "0000000000000000" + "26" + f"6a24aa21a9ed{witness_commitment}" # vout 2
-#     # 6a24aa21a9edfaa194df59043645ba0f58aad74bfd5693fa497093174d12a4bb3b0574a878db
-#     # add witness
-#     coinbase += "01" + "20" + "0000000000000000000000000000000000000000000000000000000000000000"
-#     coinbase += "00000000" # add locktime
-#     return coinbase
 
 def txid_list_segwit(folder):
     txidlist = []

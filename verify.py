@@ -291,16 +291,3 @@ def create_segwit_tx_hash(tx_json, idx):
     msg += struct.pack('<I', tx_data['locktime']).hex()
     msg += "01000000"
     return hash256(bytes.fromhex(msg))
-
-# files = os.listdir("./v0_p2wpkh")
-# valid_p2wpkh_files = []
-# for file in files:
-#     with open("./v0_p2wpkh/" + file, "r") as f:
-#         data = json.load(f)
-#         if verify_p2wpkh(data):
-#             json_str = json.dumps(data)
-#             if len(json_str.encode("utf-8")) != 94429:
-#                 valid_p2wpkh_files.append(file)
-#         else:
-#             print(file, ": Invalid")
-# print(len(valid_p2wpkh_files))

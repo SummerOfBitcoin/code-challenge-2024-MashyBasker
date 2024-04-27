@@ -1,10 +1,6 @@
 from mining import calculate_coinbase, txid_list, blockheader
 from verify import filter_p2pkh, filter_p2wpkh, verify_transaction_p2pkh, verify_transaction_p2wpkh, merge_folders
 
-# txidlist = txid_list()
-# coinbase = calculate_coinbase()
-# block_header = blockheader(txidlist)
-
 def write_to_file(txidlist, coinbase, block_header):
     with open("output.txt", "a") as f:
         f.write(block_header)
