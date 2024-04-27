@@ -1,5 +1,5 @@
-from mining import calculate_coinbase_p2pkh, txid_list, blockheader
-from verify import filter_transactions, verify_transaction
+from mining import calculate_coinbase, txid_list, blockheader
+from verify import filter_p2pkh, filter_p2wpkh, verify_transaction_p2pkh, verify_transaction_p2wpkh, merge_folders
 
 # txidlist = txid_list()
 # coinbase = calculate_coinbase()
@@ -14,10 +14,14 @@ def write_to_file(txidlist, coinbase, block_header):
         for txid in txidlist:
             f.write(f"\n{txid}")
 
-filter_transactions("./mempool", "./p2pkh")
-verify_transaction("./p2pkh")
+filter_p2pkh("./mempool", "./p2pkh")
+filter_p2wpkh("./mempool", "./v0_p2wpkh")
+
+verify_transaction_p2pkh("./p2pkh", "./p2pkh_verified")
+verify_transaction_p2wpkh("./v0_p2wpkh", "./v0_p2wpkh_verified")
+merge_folders("./p2pkh_verified", "./v0_p2wpkh_verified", "./verified")
 txidlist = txid_list()
-coinbase = calculate_coinbase_p2pkh(txidlist)
+coinbase = calculate_coinbase("./verified")
 block_header = blockheader(txidlist)
 write_to_file(txidlist, coinbase, block_header)
         

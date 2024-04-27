@@ -1,6 +1,7 @@
 test.txt
 testdata/
 p2pkh/
+p2pkh_verified
 p2sh/
 v0_*
 v1*
