@@ -150,7 +150,7 @@ def wtxid_segwit(tx_json):
     wtxid += "00" # scriptsig size
     wtxid += struct.pack("<I", vin["sequence"]).hex()
     
-    wtxid += compact_size(len(tx_data["vout"])//2).hex()
+    wtxid += compact_size(len(tx_data["vout"])).hex()
     for vout in tx_data["vout"]:
         wtxid += struct.pack("<Q", vout["value"]).hex()
         wtxid += compact_size(len(vout["scriptpubkey"])//2).hex()
