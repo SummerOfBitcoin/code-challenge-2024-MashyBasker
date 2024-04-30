@@ -10,7 +10,7 @@ def write_to_file(txidlist, coinbase, block_header):
         for txid in txidlist:
             f.write(f"\n{txid}")
 
-filter_p2pkh("./mempool", "./p2pkh_check")
+filter_p2pkh("./mempool", "./p2pkh")
 filter_p2wpkh("./mempool", "./v0_p2wpkh")
 
 verify_transaction_p2pkh("./p2pkh", "./p2pkh_verified")
